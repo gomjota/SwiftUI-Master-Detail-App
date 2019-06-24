@@ -9,10 +9,11 @@
 import SwiftUI
 
 struct ContentView : View {
-    var recipes: [Recipe] = []
+    @ObjectBinding var store = RecipeStore()
+    
     var body: some View {
         NavigationView {
-            List(recipes) { recipe in
+            List(store.recipes) { recipe in
                 RecipeCell(recipe: recipe)
             }
         }
@@ -22,7 +23,7 @@ struct ContentView : View {
 #if DEBUG
 struct ContentView_Previews : PreviewProvider {
     static var previews: some View {
-        ContentView(recipes: testData)
+        ContentView(store: RecipeStore(recipes: testData))
     }
 }
 #endif
@@ -31,7 +32,7 @@ struct RecipeCell : View {
     let recipe: Recipe
     
     var body: some View {
-        return NavigationButton(destination: Text(recipe.title)) {
+        return NavigationButton(destination: RecipeDetail(recipe: recipe)) {
             Image(recipe.imageName)
                 .resizable()
                 .frame(minWidth: 0, idealWidth: 100, maxWidth: 100, minHeight: 0, idealHeight: 100, maxHeight: 100)
@@ -42,6 +43,7 @@ struct RecipeCell : View {
                     
                     HStack {
                         Image(systemName: "heart.fill")
+                            .foregroundColor(.red)
                         Text(String(recipe.likes))
                             .font(.subheadline)
                             .fontWeight(.light)
