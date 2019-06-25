@@ -5,9 +5,23 @@ struct ContentView : View {
     
     var body: some View {
         NavigationView {
-            List(store.recipes) { recipe in
-                RecipeCell(recipe: recipe)
+            List {
+                Section {
+                    Button(action: store.addRecipe) {
+                        Text("Add recipe")
+                    }
+                }
+                
+                Section {
+                    ForEach(store.recipes) { recipe in
+                        RecipeCell(recipe: recipe)
+                    }
+                    .onDelete(perform: store.deleteRecipe(at:))
+                }
             }
+            .navigationBarTitle(Text("Recipes"))
+            .navigationBarItems(trailing: EditButton())
+            .listStyle(.grouped)
         }
     }
 }
